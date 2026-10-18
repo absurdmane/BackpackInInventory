@@ -14,13 +14,17 @@ namespace BackpackInInventory
         private const string VanillaSortMethod = nameof(InventoryPanelUI.SortInventory);
 
         private static GameObject button;
-        private static bool searched;
+        private static bool notFound;
 
         /// <summary>Shows or hides the button; created on first show.</summary>
         internal static void Show(bool visible)
         {
+            // Loading a save rebuilds the character slots, destroying the button with the old backpack slot.
+            Slot backpackSlot = Inventory.instance.CharacterSlots[Inventory.backpack].slot;
+            if (button != null && (backpackSlot == null || button.transform.parent != backpackSlot.transform))
+                Destroy();
             if (button == null && visible)
-                Create();
+                Create(backpackSlot);
             if (button != null && button.activeSelf != visible)
                 button.SetActive(visible);
         }
@@ -30,18 +34,16 @@ namespace BackpackInInventory
             if (button != null)
                 Object.Destroy(button);
             button = null;
-            searched = false;
         }
 
-        private static void Create()
+        private static void Create(Slot backpackSlot)
         {
-            if (searched)
-                return; // not found once: don't search every sync
-            searched = true;
-            Slot backpackSlot = Inventory.instance.CharacterSlots[Inventory.backpack].slot;
+            if (notFound || backpackSlot == null)
+                return;
             UiButton vanilla = FindVanilla(Inventory.instance.inventoryPanelUI);
-            if (backpackSlot == null || vanilla == null)
+            if (vanilla == null)
             {
+                notFound = true; // don't search on every sync
                 Plugin.Log.LogWarning("The inventory's Sort button was not found; the backpack has no Sort button.");
                 return;
             }

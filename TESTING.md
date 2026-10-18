@@ -43,3 +43,7 @@ Rounds 1 and 2 verified in game by the user on 2026-10-18 (items marked [-] skip
 - Hot reload hid the inventory item icons every other time: the layout restore swapped the slot grid and its placeholder grid,
   so the placeholders covered the slots. Fixed (order saved before moving, slot grid always drawn last). Check: several
   Reload changed in a row, icons always visible. [verified 2026-10-18]
+- Sort button on the backpack slot missing after loading a save (appeared only after a hot reload): loading rebuilds the
+  character slots and destroyed the button with the old backpack slot; a "searched once" flag kept it from being made again.
+  Now it is re-created whenever the backpack slot object changes. [verified 2026-10-19: the user's in-game check before
+  the release]
