@@ -1,0 +1,61 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- Unity 6 Mono exposes the .NET Standard 2.1 API surface; net6.0 assemblies don't load there. -->
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>BackpackInInventory</AssemblyName>
+    <RootNamespace>BackpackInInventory</RootNamespace>
+    <Description>The worn backpack as part of the inventory for Obenseuer (BepInEx 6, Unity Mono)</Description>
+    <Authors>absurdmane</Authors>
+    <Company>absurdmane</Company>
+    <Product>Backpack In Inventory</Product>
+    <Version>1.0.0</Version>
+    <LangVersion>latest</LangVersion>
+    <Nullable>disable</Nullable>
+    <DebugType>embedded</DebugType>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <GenerateDependencyFile>false</GenerateDependencyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- GameDir comes from ../local.props (see local.props.example). dotnet build -p:Deploy=true copies the dll into BepInEx\plugins\BackpackInInventory -->
+    <Deploy Condition="'$(Deploy)' == ''">false</Deploy>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Makes private game members visible at compile time (Mono doesn't enforce access checks). -->
+    <PackageReference Include="BepInEx.AssemblyPublicizer.MSBuild" Version="0.4.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="$(BepInExCore)\BepInEx.Core.dll" Private="false" />
+    <Reference Include="$(BepInExCore)\BepInEx.Unity.Mono.dll" Private="false" />
+    <Reference Include="$(BepInExCore)\0Harmony.dll" Private="false" />
+
+    <Reference Include="$(ManagedDir)\Assembly-CSharp.dll" Publicize="true" Private="false" />
+    <Reference Include="$(ManagedDir)\Assembly-CSharp-firstpass.dll" Publicize="true" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.InputLegacyModule.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.UI.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.UIModule.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.AudioModule.dll" Private="false" />
+    <Reference Include="$(ManagedDir)\UnityEngine.TextRenderingModule.dll" Private="false" />
+  </ItemGroup>
+
+  <Target Name="DeployToGame" AfterTargets="Build" Condition="'$(Deploy)' == 'true'">
+    <Delete Files="$(GameDir)\BepInEx\scripts\BackpackInInventory\BackpackInInventory.dll;$(GameDir)\BepInEx\scripts\BackpackInInventory\BackpackInInventory.pdb" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\plugins\BackpackInInventory" />
+    <Message Importance="high" Text="BackpackInInventory -> $(GameDir)\BepInEx\plugins\BackpackInInventory" />
+  </Target>
+
+  <!-- Development: -p:Deploy=scripts puts the dll into BepInEx\scripts, where the DevMenu tool loads it and reloads it from
+       Tools > Reload changed without restarting the game. The copy in plugins is removed so the mod isn't loaded twice. -->
+  <Target Name="DeployToScripts" AfterTargets="Build" Condition="'$(Deploy)' == 'scripts'">
+    <Delete Files="$(GameDir)\BepInEx\plugins\BackpackInInventory\BackpackInInventory.dll" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(GameDir)\BepInEx\scripts\BackpackInInventory" />
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(GameDir)\BepInEx\scripts\BackpackInInventory" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+    <Message Importance="high" Text="BackpackInInventory -> $(GameDir)\BepInEx\scripts\BackpackInInventory (press the reload key in game)" />
+  </Target>
+
+</Project>
