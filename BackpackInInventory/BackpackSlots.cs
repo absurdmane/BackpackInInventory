@@ -157,11 +157,19 @@ namespace BackpackInInventory
                 controller.OnDropped = (i, a, o, m) => Changed(storage);
                 controller.OnTaken = (i, a, o, m) => Changed(storage);
                 controller.OnReturn = (i, a, o, m) => Changed(storage);
-                controller.CaptureSlot(grid);
-                if (controller.slot.transform.parent != grid)
-                    controller.slot.transform.SetParent(grid, false);
+                // Re-capturing a slot that is already shown rebuilds its item icon, and destroying any item icon closes
+                // the item info panel. Syncs also run while the player uses an item (Inventory.ForceCharacterItemsUpdate re-fires the backpack
+                // slot's OnDropped), so only slots that are gone or elsewhere are captured again.
+                bool shownHere = controller.slot != null && controller.slot.transform.parent == grid &&
+                                 controller.slot.slotcontrol == controller;
+                if (!shownHere)
+                {
+                    controller.CaptureSlot(grid);
+                    if (controller.slot.transform.parent != grid)
+                        controller.slot.transform.SetParent(grid, false);
+                    controller.slot.SetColorToNormal();
+                }
                 controller.slot.playerSlot = true;
-                controller.slot.SetColorToNormal();
             }
         }
 
@@ -183,6 +191,8 @@ namespace BackpackInInventory
                 controller.slot = null;
             }
         }
+
+        internal static void MarkChanged(Storage storage) => Changed(storage);
 
         private static void Changed(Storage storage)
         {

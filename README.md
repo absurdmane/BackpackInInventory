@@ -9,6 +9,8 @@ backpack window, which closed whatever you had open.
 - The worn backpack's slots are shown under the inventory slots, with a bluish tint. Scroll the inventory with the mouse wheel.
 - The backpack window is gone: no "OPEN" tab, key 3 and equipping a backpack don't open it.
 - With a container, station or trade open, the backpack slots stay and work like the inventory.
+- Quick move with only the inventory open moves items from the inventory into the backpack and back. Clothes and other
+  equipable items are still equipped.
 - Drop an item on the backpack slot to put it into the backpack.
 - A small **Sort** button on the backpack slot sorts the backpack; its items stay in it.
 - The backpack counts as inventory everywhere: pickups and item givers put items into it when the inventory is full,
