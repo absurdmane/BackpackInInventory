@@ -41,6 +41,21 @@ namespace BackpackInInventory
 
         internal static bool IsBackpackSlot(Slot slot) => backpackGrid != null && slot.transform.parent == backpackGrid;
 
+        /// <summary>
+        /// A slot scrolled out of the viewport: hidden by the mask, but raycasts still hit it (the item info panel lies
+        /// over the part below the viewport).
+        /// </summary>
+        internal static bool IsHiddenSlot(Slot slot, Vector2 screenPoint)
+        {
+            if (viewport == null || content == null || !slot.transform.IsChildOf(content))
+                return false;
+            Canvas canvas = viewport.GetComponentInParent<Canvas>();
+            Camera camera = canvas == null || canvas.rootCanvas.renderMode == RenderMode.ScreenSpaceOverlay
+                ? null
+                : canvas.rootCanvas.worldCamera;
+            return !RectTransformUtility.RectangleContainsScreenPoint(viewport, screenPoint, camera);
+        }
+
         /// <summary>Builds the scrolled layout once; true when it's in place.</summary>
         internal static bool Install()
         {

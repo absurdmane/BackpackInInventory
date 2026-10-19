@@ -71,5 +71,8 @@ With only the inventory open (no container, station, trade):
   the release]
 - With a backpack worn, Use/Eat on any item only closed the item info (1.0.0 bug). Every backpack sync re-captured all
   backpack slots, rebuilding their item icons, and destroying an item icon closes the info panel; using an item triggers
-  such a sync. Now only slots that are gone are captured again. Not re-checked in game yet: Use/Eat with a backpack worn,
-  on items in the main slots and in the backpack.
+  such a sync. Now only slots that are gone are captured again.
+  Second cause (found 2026-10-20 with a stack trace): backpack slots scrolled below the viewport are hidden by the mask but
+  still take raycasts and lie under the item info panel; the game's inventory navigation deselects on mouse down when the
+  first slot under the pointer (even under a button) isn't the selected one. Its slot lookups now skip hidden slots.
+  [verified 2026-10-20: Use/Eat works with a backpack worn]

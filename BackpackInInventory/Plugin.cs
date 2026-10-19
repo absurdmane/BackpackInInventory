@@ -51,7 +51,7 @@ namespace BackpackInInventory
             };
 
             harmony = new Harmony(Guid);
-            foreach (Type patches in new[] { typeof(VanillaBackpack), typeof(BackpackSlots), typeof(InventoryExtension), typeof(DropOnBackpack), typeof(QuickMove) })
+            foreach (Type patches in new[] { typeof(VanillaBackpack), typeof(BackpackSlots), typeof(InventoryExtension), typeof(DropOnBackpack), typeof(QuickMove), typeof(HiddenSlotClicks) })
             {
                 // A game update breaking one patch class shouldn't take the rest with it.
                 try
