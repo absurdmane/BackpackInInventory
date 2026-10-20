@@ -31,9 +31,7 @@ backpack window, which closed whatever you had open.
 | General | SlotColor | #CDDCFF | Background of the backpack slots (#RRGGBB); #FFFFFF = like the inventory slots. |
 | General | SortButtonScale | 0.75 | Size of the backpack's Sort button relative to the inventory's. |
 
-## Compatibility
-
-- Made and tested with mouse and keyboard; gamepad navigation was not changed or tested.
+## Reporting problems
 
 When reporting a problem, please attach `BepInEx/LogOutput.log`.
 
